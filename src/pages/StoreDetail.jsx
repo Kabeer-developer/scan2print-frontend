@@ -82,8 +82,8 @@ const StoreDetail = () => {
   // Loading state
   if (storeLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="flex items-center gap-3 text-gray-400 text-sm">
+      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex items-center justify-center">
+        <div className="flex items-center gap-3 text-gray-400 text-sm font-medium">
           <svg className="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
             <path d="M21 12a9 9 0 1 1-6.219-8.56" strokeLinecap="round"/>
           </svg>
@@ -95,34 +95,41 @@ const StoreDetail = () => {
 
   if (!store) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <p className="text-gray-400 text-sm">Store not found.</p>
+      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-14 h-14 bg-white shadow-sm border border-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4 text-gray-300">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+            </svg>
+          </div>
+          <p className="text-gray-500 text-sm font-medium">Store not found.</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 px-4 py-10">
+    <div className="min-h-screen bg-gray-50 px-4 py-12">
       <div className="max-w-lg mx-auto">
 
         {/* Store Info Card */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex items-center gap-4 mb-4">
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-md shadow-gray-100/50 p-5 flex items-center gap-4 mb-4">
           <div className="shrink-0">
             {!imgError && store.logoUrl ? (
               <img
                 src={store.logoUrl}
                 alt={store.name}
                 onError={() => setImgError(true)}
-                className="w-14 h-14 rounded-xl object-cover border border-gray-100"
+                className="w-14 h-14 rounded-2xl object-cover border border-gray-100"
               />
             ) : (
-              <div className="w-14 h-14 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-base">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-50 to-indigo-100 border border-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-base tracking-tight">
                 {initials}
               </div>
             )}
           </div>
           <div className="min-w-0">
-            <h2 className="text-base font-bold text-gray-900 truncate">{store.name}</h2>
+            <h2 className="text-base font-bold text-gray-900 truncate tracking-tight">{store.name}</h2>
             {store.location && (
               <p className="text-sm text-gray-400 flex items-center gap-1 mt-0.5 truncate">
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
@@ -133,16 +140,17 @@ const StoreDetail = () => {
             )}
           </div>
           {store.isOpen !== false && (
-            <span className="ml-auto shrink-0 text-xs font-semibold text-green-600 bg-green-50 border border-green-100 px-2.5 py-1 rounded-full">
+            <span className="ml-auto shrink-0 flex items-center gap-1.5 text-xs font-semibold text-green-600 bg-green-50 border border-green-100 px-3 py-1.5 rounded-full">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
               Open
             </span>
           )}
         </div>
 
         {/* Upload Form Card */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-          <h3 className="text-base font-bold text-gray-900 mb-1">Upload Document</h3>
-          <p className="text-xs text-gray-400 mb-5">Fill in your details and attach the file you want printed.</p>
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-md shadow-gray-100/50 p-6">
+          <h3 className="text-base font-bold text-gray-900 tracking-tight mb-1">Upload Document</h3>
+          <p className="text-xs text-gray-400 mb-6">Fill in your details and attach the file you want printed.</p>
 
           <form onSubmit={submit} className="space-y-4">
 
@@ -154,7 +162,7 @@ const StoreDetail = () => {
                 value={userName}
                 onChange={(e) => setUserName(e.target.value)}
                 required
-                className="w-full border border-gray-200 rounded-lg px-3.5 py-2.5 text-sm text-gray-900 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 transition"
+                className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm text-gray-900 placeholder-gray-300 focus:outline-none focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 transition-all duration-200"
               />
             </div>
 
@@ -168,7 +176,7 @@ const StoreDetail = () => {
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
                 rows={3}
-                className="w-full border border-gray-200 rounded-lg px-3.5 py-2.5 text-sm text-gray-900 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 transition resize-none"
+                className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm text-gray-900 placeholder-gray-300 focus:outline-none focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 transition-all duration-200 resize-none"
               />
             </div>
 
@@ -180,20 +188,20 @@ const StoreDetail = () => {
                   onDragOver={(e) => e.preventDefault()}
                   onDrop={handleFileDrop}
                   onClick={() => fileRef.current?.click()}
-                  className="border-2 border-dashed border-gray-200 rounded-xl px-4 py-8 text-center cursor-pointer hover:border-indigo-300 hover:bg-indigo-50/40 transition-colors duration-150"
+                  className="border-2 border-dashed border-gray-200 rounded-2xl px-4 py-9 text-center cursor-pointer hover:border-indigo-300 hover:bg-indigo-50/40 transition-colors duration-200"
                 >
-                  <div className="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center mx-auto mb-2 text-gray-300">
+                  <div className="w-11 h-11 bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-3 text-gray-300">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
                       <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
                     </svg>
                   </div>
-                  <p className="text-sm font-medium text-gray-500">Drop file here or <span className="text-indigo-600">browse</span></p>
+                  <p className="text-sm font-medium text-gray-500">Drop file here or <span className="text-indigo-600 font-semibold">browse</span></p>
                   <p className="text-xs text-gray-300 mt-1">PDF, JPG, PNG, DOCX supported</p>
                 </div>
               ) : (
-                <div className="flex items-center gap-3 border border-gray-100 bg-gray-50 rounded-xl px-4 py-3">
-                  <div className="w-9 h-9 bg-indigo-50 border border-indigo-100 rounded-lg flex items-center justify-center text-indigo-500 shrink-0">
+                <div className="flex items-center gap-3 border border-gray-100 bg-gray-50 rounded-2xl px-4 py-3.5">
+                  <div className="w-9 h-9 bg-indigo-50 border border-indigo-100 rounded-xl flex items-center justify-center text-indigo-500 shrink-0">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
                       <polyline points="14 2 14 8 20 8"/>
@@ -215,7 +223,7 @@ const StoreDetail = () => {
 
             {/* Status */}
             {status && (
-              <div className={`flex items-start gap-2 text-sm rounded-lg px-3.5 py-2.5 border ${
+              <div className={`flex items-start gap-2 text-sm rounded-xl px-3.5 py-2.5 border ${
                 status.type === "success"
                   ? "bg-green-50 border-green-100 text-green-700"
                   : "bg-red-50 border-red-100 text-red-600"
@@ -234,7 +242,7 @@ const StoreDetail = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-indigo-600 hover:bg-indigo-700 active:scale-[0.98] disabled:opacity-60 text-white text-sm font-semibold py-2.5 rounded-lg transition-all duration-150"
+              className="w-full bg-indigo-600 hover:bg-indigo-700 hover:shadow-lg hover:shadow-indigo-200 active:scale-[0.98] disabled:opacity-60 disabled:hover:shadow-none text-white text-sm font-semibold py-2.5 rounded-xl transition-all duration-200"
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">

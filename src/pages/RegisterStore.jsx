@@ -45,12 +45,12 @@ const RegisterStore = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-10">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-gray-50 to-white px-4 py-10">
       <div className="w-full max-w-sm">
 
         {/* Logo mark */}
         <div className="flex justify-center mb-6">
-          <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center shadow-sm">
+          <div className="w-11 h-11 rounded-2xl bg-indigo-600 flex items-center justify-center shadow-md shadow-indigo-100">
             <svg width="18" height="18" viewBox="0 0 14 14" fill="none">
               <rect x="1" y="1" width="5" height="5" rx="1" fill="white" opacity="0.9"/>
               <rect x="8" y="1" width="5" height="5" rx="1" fill="white" opacity="0.6"/>
@@ -61,18 +61,18 @@ const RegisterStore = () => {
         </div>
 
         {/* Card */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
-          <h2 className="text-xl font-bold text-gray-900 text-center">Create your store</h2>
-          <p className="text-sm text-gray-400 text-center mt-1">Start receiving print jobs today</p>
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-lg shadow-gray-100/60 p-8">
+          <h2 className="text-xl font-bold text-gray-900 text-center tracking-tight">Create your store</h2>
+          <p className="text-sm text-gray-400 text-center mt-1.5">Start receiving print jobs today</p>
 
-          <form onSubmit={submit} className="mt-6 space-y-4">
+          <form onSubmit={submit} className="mt-7 space-y-4">
 
             {/* Logo Upload */}
             <div>
               <label className="block text-xs font-medium text-gray-600 mb-1.5">Store Logo</label>
               <div className="flex items-center gap-4">
                 {/* Preview */}
-                <div className="w-14 h-14 rounded-xl border border-gray-100 bg-gray-50 overflow-hidden flex items-center justify-center shrink-0">
+                <div className="w-14 h-14 rounded-2xl border border-gray-100 bg-gray-50 overflow-hidden flex items-center justify-center shrink-0">
                   {preview ? (
                     <img src={preview} alt="logo" className="w-full h-full object-cover" />
                   ) : (
@@ -87,7 +87,7 @@ const RegisterStore = () => {
                   <button
                     type="button"
                     onClick={() => fileRef.current?.click()}
-                    className="text-xs font-medium text-indigo-600 hover:text-indigo-700 border border-indigo-200 bg-indigo-50 px-3 py-1.5 rounded-lg transition"
+                    className="text-xs font-semibold text-indigo-600 hover:text-indigo-700 border border-indigo-100 bg-indigo-50 hover:bg-indigo-100 px-3.5 py-1.5 rounded-full transition-colors duration-150"
                   >
                     {preview ? "Change logo" : "Upload logo"}
                   </button>
@@ -95,7 +95,7 @@ const RegisterStore = () => {
                     <button
                       type="button"
                       onClick={removeLogo}
-                      className="text-xs text-gray-400 hover:text-red-500 transition text-left"
+                      className="text-xs text-gray-400 hover:text-red-500 transition-colors duration-150 text-left px-1"
                     >
                       Remove
                     </button>
@@ -121,7 +121,7 @@ const RegisterStore = () => {
                 value={form.name}
                 onChange={handleChange}
                 required
-                className="w-full border border-gray-200 rounded-lg px-3.5 py-2.5 text-sm text-gray-900 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 transition"
+                className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm text-gray-900 placeholder-gray-300 focus:outline-none focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 transition-all duration-200"
               />
             </div>
 
@@ -134,7 +134,7 @@ const RegisterStore = () => {
                 value={form.location}
                 onChange={handleChange}
                 required
-                className="w-full border border-gray-200 rounded-lg px-3.5 py-2.5 text-sm text-gray-900 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 transition"
+                className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm text-gray-900 placeholder-gray-300 focus:outline-none focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 transition-all duration-200"
               />
             </div>
 
@@ -148,7 +148,7 @@ const RegisterStore = () => {
                 value={form.email}
                 onChange={handleChange}
                 required
-                className="w-full border border-gray-200 rounded-lg px-3.5 py-2.5 text-sm text-gray-900 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 transition"
+                className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm text-gray-900 placeholder-gray-300 focus:outline-none focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 transition-all duration-200"
               />
             </div>
 
@@ -163,7 +163,7 @@ const RegisterStore = () => {
                   value={form.password}
                   onChange={handleChange}
                   required
-                  className="w-full border border-gray-200 rounded-lg px-3.5 py-2.5 text-sm text-gray-900 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 transition pr-10"
+                  className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm text-gray-900 placeholder-gray-300 focus:outline-none focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 transition-all duration-200 pr-10"
                 />
                 <button
                   type="button"
@@ -189,7 +189,7 @@ const RegisterStore = () => {
 
             {/* Error */}
             {error && (
-              <div className="flex items-start gap-2 text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3.5 py-2.5">
+              <div className="flex items-start gap-2 text-sm text-red-600 bg-red-50 border border-red-100 rounded-xl px-3.5 py-2.5">
                 <svg className="shrink-0 mt-0.5" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
                 </svg>
@@ -201,7 +201,7 @@ const RegisterStore = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-indigo-600 hover:bg-indigo-700 active:scale-[0.98] disabled:opacity-60 text-white text-sm font-semibold py-2.5 rounded-lg transition-all duration-150 mt-1"
+              className="w-full bg-indigo-600 hover:bg-indigo-700 hover:shadow-lg hover:shadow-indigo-200 active:scale-[0.98] disabled:opacity-60 disabled:hover:shadow-none text-white text-sm font-semibold py-2.5 rounded-xl transition-all duration-200 mt-1"
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -216,7 +216,7 @@ const RegisterStore = () => {
         </div>
 
         {/* Footer */}
-        <p className="text-sm text-center text-gray-400 mt-5">
+        <p className="text-sm text-center text-gray-400 mt-6">
           Already have an account?{" "}
           <Link to="/login" className="text-indigo-600 font-medium hover:text-indigo-700">
             Sign in

@@ -55,14 +55,14 @@ const Dashboard = () => {
 
   if (!storeInfo) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-gray-50 to-white">
         <div className="text-center">
-          <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <div className="w-14 h-14 bg-white shadow-sm border border-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
             </svg>
           </div>
-          <p className="text-gray-500 text-sm font-medium">Please log in to view your dashboard</p>
+          <p className="text-gray-600 text-sm font-medium">Please log in to view your dashboard</p>
         </div>
       </div>
     );
@@ -105,11 +105,19 @@ const Dashboard = () => {
       <div className="max-w-4xl mx-auto px-6 py-10">
 
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">Uploaded Files</h1>
-          <p className="text-sm text-gray-400 mt-1">
-            {storeInfo.name} · {files.length} {files.length === 1 ? "file" : "files"}
-          </p>
+        <div className="mb-8 flex items-end justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Uploaded Files</h1>
+            <p className="text-sm text-gray-400 mt-1">
+              {storeInfo.name} · {files.length} {files.length === 1 ? "file" : "files"}
+            </p>
+          </div>
+          {!loading && files.length > 0 && (
+            <div className="hidden sm:flex items-center gap-1.5 text-xs font-medium text-gray-400 bg-white border border-gray-100 rounded-full px-3 py-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+              Synced
+            </div>
+          )}
         </div>
 
         {/* Loading */}
@@ -118,7 +126,7 @@ const Dashboard = () => {
             {[1, 2, 3].map((i) => (
               <div key={i} className="bg-white rounded-xl border border-gray-100 p-4 animate-pulse">
                 <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 bg-gray-100 rounded-lg" />
+                  <div className="w-11 h-11 bg-gray-100 rounded-lg" />
                   <div className="flex-1 space-y-2">
                     <div className="h-3.5 bg-gray-100 rounded w-1/3" />
                     <div className="h-3 bg-gray-100 rounded w-1/2" />
@@ -131,18 +139,18 @@ const Dashboard = () => {
 
         {/* Empty */}
         {!loading && files.length === 0 && (
-          <div className="bg-white rounded-xl border border-gray-100 py-16 text-center">
-            <div className="w-12 h-12 bg-gray-50 rounded-xl flex items-center justify-center mx-auto mb-3 text-gray-300">
+          <div className="bg-white rounded-2xl border border-gray-100 py-20 text-center">
+            <div className="w-14 h-14 bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4 text-gray-300">
               <FileIcon />
             </div>
-            <p className="text-gray-500 text-sm font-medium">No files uploaded yet</p>
+            <p className="text-gray-600 text-sm font-semibold">No files uploaded yet</p>
             <p className="text-gray-400 text-xs mt-1">Files from customers will appear here</p>
           </div>
         )}
 
         {/* File List */}
         {!loading && files.length > 0 && (
-          <div className="space-y-2">
+          <div className="space-y-2.5">
             {files.map((f) => {
               const ext = getFileExtension(f.originalFileName);
               const isDeleting = deletingId === f._id;
@@ -151,10 +159,10 @@ const Dashboard = () => {
               return (
                 <div
                   key={f._id}
-                  className={`bg-white rounded-xl border border-gray-100 p-4 flex items-center gap-4 hover:border-gray-200 hover:shadow-sm transition-all duration-150 ${isDeleting ? "opacity-50 pointer-events-none" : ""}`}
+                  className={`bg-white rounded-2xl border border-gray-100 p-4 flex items-center gap-4 hover:border-indigo-100 hover:shadow-md hover:shadow-gray-100/60 transition-all duration-200 ${isDeleting ? "opacity-50 pointer-events-none" : ""}`}
                 >
                   {/* File type badge */}
-                  <div className={`shrink-0 w-11 h-11 rounded-lg border flex items-center justify-center text-[10px] font-bold tracking-wide ${extColor(ext)}`}>
+                  <div className={`shrink-0 w-11 h-11 rounded-xl border flex items-center justify-center text-[10px] font-bold tracking-wide ${extColor(ext)}`}>
                     {ext.slice(0, 4)}
                   </div>
 
@@ -175,7 +183,7 @@ const Dashboard = () => {
                     <button
                       onClick={() => handleDownload(f._id, f.originalFileName)}
                       disabled={isDownloading}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-gray-600 hover:bg-gray-50 hover:text-indigo-600 transition-colors duration-150 disabled:opacity-50"
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium text-gray-500 hover:bg-indigo-50 hover:text-indigo-600 transition-colors duration-150 disabled:opacity-50"
                     >
                       <DownloadIcon />
                       {isDownloading ? "…" : "Download"}
@@ -184,7 +192,7 @@ const Dashboard = () => {
                     <button
                       onClick={() => handleDelete(f._id)}
                       disabled={isDeleting}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:bg-red-50 hover:text-red-500 transition-colors duration-150 disabled:opacity-50"
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium text-gray-400 hover:bg-red-50 hover:text-red-500 transition-colors duration-150 disabled:opacity-50"
                     >
                       <TrashIcon />
                       Delete
