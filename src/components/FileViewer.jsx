@@ -67,98 +67,157 @@ const FileViewer = ({ file, onClose }) => {
     blobType === "application/pdf" ||
     file.fileType === "application/pdf";
 
-  const handlePrint = () => {
+  // =====================================================
+  // PRINT IMAGE
+  // =====================================================
+
+  const printImage = () => {
     if (!fileUrl) return;
 
-    // =================================================
-    // IMAGE PRINT
-    // =================================================
+    const printWindow = window.open(
+      "",
+      "_blank",
+      "width=1000,height=800"
+    );
 
-    if (isImage) {
-      const printWindow = window.open(
-        "",
-        "_blank",
-        "width=1000,height=800"
-      );
-
-      if (!printWindow) {
-        alert("Please allow pop-ups to print the file.");
-        return;
-      }
-
-      printWindow.document.write(`
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <title>Print File</title>
-
-            <style>
-              @page {
-                margin: 10mm;
-              }
-
-              html,
-              body {
-                margin: 0;
-                padding: 0;
-                width: 100%;
-                background: white;
-              }
-
-              body {
-                display: flex;
-                justify-content: center;
-                align-items: flex-start;
-              }
-
-              img {
-                max-width: 100%;
-                max-height: 100vh;
-                object-fit: contain;
-              }
-            </style>
-          </head>
-
-          <body>
-            <img
-              src="${fileUrl}"
-              alt="Print"
-              onload="setTimeout(() => window.print(), 300)"
-            />
-          </body>
-        </html>
-      `);
-
-      printWindow.document.close();
-
+    if (!printWindow) {
+      alert("Please allow pop-ups to print the file.");
       return;
     }
 
-    // =================================================
-    // PDF PRINT
-    // =================================================
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Print File</title>
+
+          <style>
+            @page {
+              margin: 10mm;
+            }
+
+            html,
+            body {
+              margin: 0;
+              padding: 0;
+              width: 100%;
+              background: white;
+            }
+
+            body {
+              display: flex;
+              justify-content: center;
+              align-items: flex-start;
+            }
+
+            img {
+              max-width: 100%;
+              max-height: 100vh;
+              object-fit: contain;
+            }
+          </style>
+        </head>
+
+        <body>
+          <img
+            src="${fileUrl}"
+            alt="Print"
+            onload="setTimeout(() => window.print(), 300)"
+          />
+        </body>
+      </html>
+    `);
+
+    printWindow.document.close();
+  };
+
+  // =====================================================
+  // PRINT PDF
+  // =====================================================
+
+  const printPdf = () => {
+    if (!fileUrl) return;
+
+    const printWindow = window.open(
+      "",
+      "_blank",
+      "width=1000,height=800"
+    );
+
+    if (!printWindow) {
+      alert("Please allow pop-ups to print the file.");
+      return;
+    }
+
+    /*
+     * Create a simple print page containing the PDF.
+     *
+     * The PDF itself is still coming from our protected
+     * Blob URL. The Cloudinary URL is never exposed.
+     */
+
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Print File</title>
+
+          <style>
+            html,
+            body {
+              margin: 0;
+              padding: 0;
+              width: 100%;
+              height: 100%;
+              background: white;
+              overflow: hidden;
+            }
+
+            iframe {
+              width: 100%;
+              height: 100%;
+              border: none;
+            }
+          </style>
+        </head>
+
+        <body>
+          <iframe
+            id="pdfFrame"
+            src="${fileUrl}"
+          ></iframe>
+
+          <script>
+            const frame = document.getElementById("pdfFrame");
+
+            frame.onload = function () {
+              setTimeout(() => {
+                window.focus();
+                window.print();
+              }, 1000);
+            };
+          </script>
+        </body>
+      </html>
+    `);
+
+    printWindow.document.close();
+  };
+
+  // =====================================================
+  // PRINT
+  // =====================================================
+
+  const handlePrint = () => {
+    if (!fileUrl) return;
+
+    if (isImage) {
+      printImage();
+      return;
+    }
 
     if (isPdf) {
-      const printWindow = window.open(
-        fileUrl,
-        "_blank",
-        "width=1000,height=800"
-      );
-
-      if (!printWindow) {
-        alert("Please allow pop-ups to print the file.");
-        return;
-      }
-
-      /*
-       * The PDF is already loaded as a local Blob URL.
-       * No Cloudinary URL is exposed to the browser.
-       *
-       * Browser PDF viewers control the actual print dialog,
-       * so we simply open the PDF and let the browser handle it.
-       */
-      printWindow.focus();
-
+      printPdf();
       return;
     }
 
