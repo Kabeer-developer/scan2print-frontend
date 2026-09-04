@@ -3,11 +3,9 @@ import uploadService from "../api/uploadService";
 
 const FileViewer = ({ file, onClose }) => {
   const [fileUrl, setFileUrl] = useState(null);
+  const [blobType, setBlobType] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  const isImage = file.fileType?.startsWith("image/");
-  const isPdf = file.fileType === "application/pdf";
 
   useEffect(() => {
     let objectUrl = null;
@@ -17,12 +15,25 @@ const FileViewer = ({ file, onClose }) => {
       try {
         setLoading(true);
         setError(null);
+        setFileUrl(null);
 
         const blob = await uploadService.viewFile(file._id);
 
         if (cancelled) return;
 
-        objectUrl = URL.createObjectURL(blob);
+        const actualType =
+          blob.type &&
+          blob.type !== "application/octet-stream"
+            ? blob.type
+            : file.fileType;
+
+        const correctedBlob = new Blob([blob], {
+          type: actualType,
+        });
+
+        objectUrl = URL.createObjectURL(correctedBlob);
+
+        setBlobType(actualType);
         setFileUrl(objectUrl);
       } catch (err) {
         console.error("View file error:", err);
@@ -48,38 +59,56 @@ const FileViewer = ({ file, onClose }) => {
     };
   }, [file]);
 
+  const isImage =
+    blobType.startsWith("image/") ||
+    file.fileType?.startsWith("image/");
+
+  const isPdf =
+    blobType === "application/pdf" ||
+    file.fileType === "application/pdf";
+
   const handlePrint = () => {
     if (!fileUrl) return;
 
-    const printWindow = window.open(
-      "",
-      "_blank",
-      "width=1000,height=800"
-    );
-
-    if (!printWindow) {
-      alert("Please allow pop-ups to print the file.");
-      return;
-    }
+    // =================================================
+    // IMAGE PRINT
+    // =================================================
 
     if (isImage) {
+      const printWindow = window.open(
+        "",
+        "_blank",
+        "width=1000,height=800"
+      );
+
+      if (!printWindow) {
+        alert("Please allow pop-ups to print the file.");
+        return;
+      }
+
       printWindow.document.write(`
         <!DOCTYPE html>
         <html>
           <head>
             <title>Print File</title>
+
             <style>
-              html, body {
+              @page {
+                margin: 10mm;
+              }
+
+              html,
+              body {
                 margin: 0;
                 padding: 0;
                 width: 100%;
-                min-height: 100%;
+                background: white;
               }
 
               body {
                 display: flex;
                 justify-content: center;
-                align-items: center;
+                align-items: flex-start;
               }
 
               img {
@@ -93,66 +122,47 @@ const FileViewer = ({ file, onClose }) => {
           <body>
             <img
               src="${fileUrl}"
-              onload="window.print()"
+              alt="Print"
+              onload="setTimeout(() => window.print(), 300)"
             />
           </body>
         </html>
       `);
 
       printWindow.document.close();
+
       return;
     }
 
+    // =================================================
+    // PDF PRINT
+    // =================================================
+
     if (isPdf) {
-      printWindow.document.write(`
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <title>Print Document</title>
+      const printWindow = window.open(
+        fileUrl,
+        "_blank",
+        "width=1000,height=800"
+      );
 
-            <style>
-              html, body {
-                margin: 0;
-                padding: 0;
-                width: 100%;
-                height: 100%;
-                overflow: hidden;
-              }
+      if (!printWindow) {
+        alert("Please allow pop-ups to print the file.");
+        return;
+      }
 
-              iframe {
-                width: 100%;
-                height: 100%;
-                border: none;
-              }
-            </style>
-          </head>
+      /*
+       * The PDF is already loaded as a local Blob URL.
+       * No Cloudinary URL is exposed to the browser.
+       *
+       * Browser PDF viewers control the actual print dialog,
+       * so we simply open the PDF and let the browser handle it.
+       */
+      printWindow.focus();
 
-          <body>
-            <iframe
-              id="printFrame"
-              src="${fileUrl}"
-            ></iframe>
-
-            <script>
-              const frame = document.getElementById("printFrame");
-
-              frame.onload = function () {
-                setTimeout(() => {
-                  frame.contentWindow.focus();
-                  frame.contentWindow.print();
-                }, 800);
-              };
-            </script>
-          </body>
-        </html>
-      `);
-
-      printWindow.document.close();
       return;
     }
 
     alert("This file type cannot currently be printed.");
-    printWindow.close();
   };
 
   return (
@@ -163,7 +173,7 @@ const FileViewer = ({ file, onClose }) => {
       <div className="bg-white w-full max-w-6xl h-[92vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden">
 
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
           <div className="min-w-0">
             <h2 className="text-lg font-semibold text-gray-900">
               File Preview
@@ -176,14 +186,20 @@ const FileViewer = ({ file, onClose }) => {
 
           <div className="flex items-center gap-2 ml-4">
 
+            {/* Print */}
             <button
               onClick={handlePrint}
-              disabled={!fileUrl || loading || (!isImage && !isPdf)}
+              disabled={
+                !fileUrl ||
+                loading ||
+                (!isImage && !isPdf)
+              }
               className="px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               🖨 Print
             </button>
 
+            {/* Close */}
             <button
               onClick={onClose}
               className="px-4 py-2 rounded-lg bg-gray-100 text-gray-600 text-sm font-medium hover:bg-gray-200 transition-colors"
@@ -218,25 +234,31 @@ const FileViewer = ({ file, onClose }) => {
           )}
 
           {/* Image */}
-          {fileUrl && isImage && !loading && !error && (
-            <img
-              src={fileUrl}
-              alt={file.originalFileName || "File preview"}
-              draggable={false}
-              onContextMenu={(e) => e.preventDefault()}
-              className="max-w-full max-h-full object-contain rounded-lg shadow-sm"
-            />
-          )}
+          {fileUrl &&
+            isImage &&
+            !loading &&
+            !error && (
+              <img
+                src={fileUrl}
+                alt={file.originalFileName || "File preview"}
+                draggable={false}
+                onContextMenu={(e) => e.preventDefault()}
+                className="max-w-full max-h-full object-contain rounded-lg shadow-sm"
+              />
+            )}
 
           {/* PDF */}
-          {fileUrl && isPdf && !loading && !error && (
-            <iframe
-              src={fileUrl}
-              title="PDF Preview"
-              onContextMenu={(e) => e.preventDefault()}
-              className="w-full h-full bg-white rounded-lg border border-gray-200"
-            />
-          )}
+          {fileUrl &&
+            isPdf &&
+            !loading &&
+            !error && (
+              <iframe
+                src={`${fileUrl}#toolbar=0&navpanes=0&scrollbar=1`}
+                title="PDF Preview"
+                onContextMenu={(e) => e.preventDefault()}
+                className="w-full h-full bg-white rounded-lg border border-gray-200"
+              />
+            )}
 
           {/* Unsupported */}
           {fileUrl &&
