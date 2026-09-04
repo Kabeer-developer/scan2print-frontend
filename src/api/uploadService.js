@@ -10,6 +10,14 @@ const uploadFile = async (storeId, formData) => {
   return res.data;
 };
 
+const viewFile = async (fileId) => {
+  const res = await axios.get(`/upload/files/view/${fileId}`, {
+    responseType: "blob",
+  });
+
+  return res.data;
+};
+
 const deleteFile = async (fileId) => {
   const res = await axios.delete(`/upload/files/${fileId}`);
   return res.data;
@@ -18,5 +26,6 @@ const deleteFile = async (fileId) => {
 export default {
   getStoreFiles,
   uploadFile,
+  viewFile,
   deleteFile,
 };
